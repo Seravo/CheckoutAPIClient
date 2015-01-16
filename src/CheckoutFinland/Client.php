@@ -18,7 +18,8 @@ class Client
      */
     public function sendPayment(Payment $payment)
     {
-        $postData = [
+
+        $postData = array(
             'VERSION'       => ''. $payment->getVersion(),
             'STAMP'         => ''. $payment->getStamp(),
             'AMOUNT'        => ''. $payment->getAmount(),
@@ -43,7 +44,7 @@ class Client
             'POSTCODE'      => ''. $payment->getPostcode(),
             'POSTOFFICE'    => ''. $payment->getPostOffice(),
             'MAC'           => ''. $payment->calculateMac()
-        ];
+        );
 
         return $this->postData("https://payment.checkout.fi", $postData);
     }
@@ -66,10 +67,10 @@ class Client
                     'content' => http_build_query($postData)
                 )
             ));
-            
+
             return file_get_contents($url, false, $context);
-        } 
-        elseif(in_array('curl', get_loaded_extensions()) ) 
+        }
+        elseif(in_array('curl', get_loaded_extensions()) )
         {
             $options = array(
                 CURLOPT_POST            => 1,
@@ -81,7 +82,7 @@ class Client
                 CURLOPT_TIMEOUT         => 4,
                 CURLOPT_POSTFIELDS      => http_build_query($postData)
             );
-        
+
             $ch = curl_init();
             curl_setopt_array($ch, $options);
             $result = curl_exec($ch);
@@ -89,7 +90,7 @@ class Client
 
             return $result;
         }
-        else 
+        else
         {
             throw new \Exception("No valid method to post data. Set allow_url_fopen setting to On in php.ini file or install curl extension.");
         }
