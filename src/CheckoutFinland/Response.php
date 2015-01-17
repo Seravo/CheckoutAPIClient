@@ -63,10 +63,11 @@ class Response
     {
         $expected_mac = null;
 
-        if($this->algorithm == 3) {
+        if ($this->algorithm == 2) {
+            $expected_mac = strtoupper(md5("$this->merchant_secret&$this->version&$this->stamp&$this->reference&$this->payment&$this->status&$this->algorithm"));
+        } elseif ($this->algorithm == 3) {
             $expected_mac = strtoupper(hash_hmac("sha256","$this->version&$this->stamp&$this->reference&$this->payment&$this->status&$this->algorithm", $this->merchant_secret));
-        }
-        else {
+        } else {
             throw new UnsupportedAlgorithmException();
         }
 
