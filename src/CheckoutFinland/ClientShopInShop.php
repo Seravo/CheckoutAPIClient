@@ -40,7 +40,7 @@ class Client
     <code>'. $payment->getReference() .'</code> <!-- product code, not required -->
     <description>'. $payment->getMessage() .'</description> <!-- required -->
     <price currency="'. $payment->getCurrency() .'">'. $payment->getAmount() .'</price>
-    <merchant>391830</merchant> <!-- required -->
+    <merchant>'. $payment->getItemMerchantId() .'</merchant> <!-- required -->
     <control>[{a:'. intval($payment->getAmount())*0.20 .',m:'. $payment->getMerchantId() .',d:"provision"}]</control>
   </item>
           ';
@@ -77,15 +77,17 @@ class Client
               <control type="default">
         <!-- @type=default = only online or offline rule is executed -->
                   <return>'. $payment->getReturnUrl() .'</return> <!-- REQUIRED -->
-                  <reject></reject> <!-- REQUIRED -->
-                  <cancel></cancel> <!-- REQUIRED -->
+                  <reject>'. $payment->getReturnUrl() .'</reject> <!-- REQUIRED -->
+                  <cancel>'. $payment->getReturnUrl() .'</cancel> <!-- REQUIRED -->
               </control>
           </request>
         </checkout>
         ';
 
+        // print_r($xml);
+
         $xml = base64_encode($xml);
-        $mac = strtoupper(md5("{$xml}+SAIPPUAKAUPPIAS"));
+        $mac = strtoupper(md5("{$xml}+". $payment->getMerchantSecret()));
 
         $postData = array(
             'CHECKOUT_XML' => $xml,

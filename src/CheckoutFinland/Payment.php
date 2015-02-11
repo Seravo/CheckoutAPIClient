@@ -24,6 +24,11 @@ class Payment
     protected $merchantSecret;
 
     /**
+     * @var string item Merchant id for shop-in-shop API (AN 20)
+     */
+    protected $itemMerchantId;
+
+    /**
      * @var string Payment version, currently always '0001' (AN 4)
      */
     protected $version;
@@ -125,12 +130,14 @@ class Payment
      * @param $merchantSecret
      * @param $allowSmallPurchases
      */
-    public function __construct($merchantId, $merchantSecret, $allowSmallPurchases = false)
+    public function __construct($merchantId, $merchantSecret, $allowSmallPurchases = false, $itemMerchantId = false)
     {
         $this->merchantId      = $merchantId;
         $this->merchantSecret  = $merchantSecret;
 
         $this->allowSmallPurchases = $allowSmallPurchases;
+
+        $this->itemMerchantId = $itemMerchantId;
 
         $this->setDefaultValues();
     }
@@ -222,7 +229,7 @@ class Payment
         foreach($params as $key => $value)
         {
             $setter_name = "set".ucfirst($key);
-            
+
             if(method_exists($this, $setter_name)) {
                 $this->$setter_name($value);
             }
@@ -243,7 +250,7 @@ class Payment
         $this->setReturnUrl($returnUrl);
         $this->setCancelUrl($returnUrl);
         $this->setDelayedUrl($returnUrl);
-        $this->setRejectUrl($returnUrl);   
+        $this->setRejectUrl($returnUrl);
 
         return $this;
     }
@@ -256,7 +263,7 @@ class Payment
     public function calculateMac()
     {
         $mac_string = $this->getVersion();
-        
+
         $mac_string .= '+' .$this->getStamp();
         $mac_string .= '+' .$this->getAmount();
         $mac_string .= '+' .$this->getReference();
@@ -580,6 +587,31 @@ class Payment
 
         return $this;
     }
+
+
+    /**
+     * @return string
+     */
+    public function getItemMerchantId()
+    {
+        return $this->itemMerchantId;
+    }
+
+    /**
+     * @param string $itemMerchantId
+     * @throws VariableTooLongException
+     * @return $this
+     */
+    public function setItemMerchantId($itemMerchantId)
+    {
+        if(strlen($merchantId) > 20 )
+            throw new VariableTooLongException("Item merchant id: $merchantId too long, max length is 20 characters");
+
+        $this->itemMerchantId = $itemMerchantId;
+
+        return $this;
+    }
+
 
     /**
      * @return string
