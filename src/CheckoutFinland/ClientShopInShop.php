@@ -41,7 +41,7 @@ class Client
     <description>'. $payment->getMessage() .'</description> <!-- required -->
     <price currency="'. $payment->getCurrency() .'">'. $payment->getAmount() .'</price>
     <merchant>'. $payment->getItemMerchantId() .'</merchant> <!-- required -->
-    <control>[{a:'. intval($payment->getAmount())*0.20 .',m:'. $payment->getMerchantId() .',d:"provision"}]</control>
+    <control>'. $payment->getControl() .'</control>
   </item>
           ';
 

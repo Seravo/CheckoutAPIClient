@@ -29,6 +29,11 @@ class Payment
     protected $itemMerchantId;
 
     /**
+     * @var string control field
+     */
+    protected $control;
+
+    /**
      * @var string Payment version, currently always '0001' (AN 4)
      */
     protected $version;
@@ -612,6 +617,26 @@ class Payment
         return $this;
     }
 
+
+    /**
+     * @return string
+     */
+    public function setControl($provision, $merchant, $description)
+    {
+        $this->control = '[{a:'. intval($this->amount)*intval($provision)
+                         .',m:'. $merchant
+                         .',d:"'. $description .'"}]';
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getControl()
+    {
+        return $this->control;
+    }
 
     /**
      * @return string
