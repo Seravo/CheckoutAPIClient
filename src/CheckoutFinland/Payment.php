@@ -623,6 +623,10 @@ class Payment
      */
     public function setControl($provision, $merchant, $description)
     {
+
+        if($this->amount < 100)
+            throw new AmountUnderMinimumException("amount is too small");
+
         $this->control = '[{a:'. intval(floatval($this->amount)*floatval($provision))
                          .',m:'. $merchant
                          .',d:"'. $description .'"}]';
