@@ -623,7 +623,7 @@ class Payment
      */
     public function setControl($provision, $merchant, $description)
     {
-        $this->control = '[{a:'. intval($this->amount)*intval($provision)
+        $this->control = '[{a:'. intval(floatval($this->amount)*floatval($provision))
                          .',m:'. $merchant
                          .',d:"'. $description .'"}]';
 
