@@ -132,10 +132,14 @@ class Client
         fputs($fp, "Connection: close\r\n\r\n");
         fputs($fp, $data);
 
-        while (!feof($fp)) $sent .= fgets($fp,128);
+        $sent = '';
+        while (!feof($fp)) {
+          $sent .= fgets($fp,128);
+        }
+
         fclose($fp);
-        $tmp=split("\r\n\r\n",$sent,2);
-        $return=split("\n",$tmp[1],2);
+        $tmp=explode("\r\n\r\n",$sent,2);
+        $return=explode("\n",$tmp[1],2);
         return ($return[1]);
 
     }
