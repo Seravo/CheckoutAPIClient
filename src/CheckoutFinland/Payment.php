@@ -619,15 +619,26 @@ class Payment
 
 
     /**
+     * @param integer $merchant Merchant ID
+     * @param string $description Provision description
+     * @param float $provision_rate Provision precentage, value range 0.00 - 1.00
+     * @param integer $provision_limit optinal Max provision amount, in cents
      * @return string
      */
-    public function setControl($provision, $merchant, $description)
+    public function setControl($merchant, $description, $provision_rate, $provision_limit = false)
     {
 
-        if($this->amount < 100)
-            throw new AmountUnderMinimumException("amount is too small");
+        if ($this->amount < 100) {
+          throw new AmountUnderMinimumException("amount is too small");
+        }
 
-        $this->control = '[{a:'. intval(floatval($this->amount)*floatval($provision))
+        $provision = intval( floatval($this->amount) * floatval($provision_rate) );
+
+        if ($provision_limit && $provision > $provision_limit) {
+          $provision = $provision_limit;
+        }
+
+        $this->control = '[{a:'. $provision
                          .',m:'. $merchant
                          .',d:"'. $description .'"}]';
 
