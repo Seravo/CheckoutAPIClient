@@ -39,7 +39,11 @@ class CreateMerchant
             $context = stream_context_create(array(
                 'http' => array(
                     'method' => 'POST',
-                    'header' => 'Authorization: Basic '. $basicAuth,
+                    'header' => array(
+                                  'Authorization: Basic '. $basicAuth,
+                                  'Content-Type: application/x-www-form-urlencoded',
+                                  'User-Agent: checkout-finland-api-client'
+                                ),
                     'content' => http_build_query($postData)
                 )
             ));
